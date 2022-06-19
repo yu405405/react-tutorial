@@ -13,8 +13,9 @@ function Square(props) {
 class Board extends React.Component {
     renderSquare(i) {
         return <Square
+                    // props.squares[i]はどこから来ている？
                     value={this.props.squares[i]}
-                    //handleClick(i)はどこから？親から？ → propsなので親から
+                    //このhandleClick(i)はどこから来ている？
                     onClick={() => this.props.onClick(i)}
                 />;
     }
@@ -55,10 +56,11 @@ class Game extends React.Component {
     }
 
     handleClick(i) {
-        // これは何をしている？
-        debugger
+        // ?? sliceを使って配列のコピーをしているが細かい動きが不明なので見てみる
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
+        // ?? コピーした配列の何かの操作
         const current = history[history.length - 1];
+        // ?? 
         const squares = current.squares.slice()
         if(calculateWinner(squares) || squares[i]) {
             return
@@ -66,7 +68,7 @@ class Game extends React.Component {
         // squares配列のi番目に'X' or 'O'を代入する（textContentは不要）
         squares[i] = this.state.xIsNext ? 'X' : 'O';
         this.setState({
-            // これは何をしている？
+            // ?? 文字列結合？
             history: history.concat([{
                 squares: squares,
             }]),
@@ -85,9 +87,9 @@ class Game extends React.Component {
     render() {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
-        // ここでは何をしているか？
+        // ?? calculateWinner関数に引数current.squareasを渡しているが、calculateWinner関数の動きは？
         const winner = calculateWinner(current.squares);
-        // ここでは何をしているか？
+        // ?? 
         const moves = history.map((step, move) => {
             const desc = move ? 'Go to move #' + move : 'Go to game start';
             return (
