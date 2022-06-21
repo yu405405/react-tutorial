@@ -2,46 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css'
 
-function Square(props) {
-    return (
-        <button className='square' onClick={props.onClick}>
-            {props.value}
-        </button>
-    )
-}
-
-class Board extends React.Component {
-    renderSquare(i) {
-        return <Square
-                    value={this.props.squares[i]}
-                    //handleClick(i)はどこから？親から？ → propsなので親から
-                    onClick={() => this.props.onClick(i)}
-                />;
-    }
-
-    render() {
-        return (
-            <div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
-            </div>
-        )
-    }
-}
-
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -55,10 +15,11 @@ class Game extends React.Component {
     }
 
     handleClick(i) {
-        // これは何をしている？
-        debugger
+        // 配列の1つ目の要素をコピー
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
+        // コピーした配列の1つ目の要素を取得、{squares: Array(9).fill(null)}（というオブジェクト）
         const current = history[history.length - 1];
+        // さらに{squares: Array(9).fill(null)}をコピー
         const squares = current.squares.slice()
         if(calculateWinner(squares) || squares[i]) {
             return
@@ -66,7 +27,8 @@ class Game extends React.Component {
         // squares配列のi番目に'X' or 'O'を代入する（textContentは不要）
         squares[i] = this.state.xIsNext ? 'X' : 'O';
         this.setState({
-            // これは何をしている？
+            // history.concat([{squares: square]}) これはどうなる？ concatの使い方
+            // 【質問】[squares: square]がなぜ[{[null, null, null, null, null, null, null, null, null]}]になるのか？
             history: history.concat([{
                 squares: squares,
             }]),
@@ -85,9 +47,9 @@ class Game extends React.Component {
     render() {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
-        // ここでは何をしているか？
+        // ?? calculateWinner関数に引数current.squareasを渡しているが、calculateWinner関数の動きは？
         const winner = calculateWinner(current.squares);
-        // ここでは何をしているか？
+        // ?? 
         const moves = history.map((step, move) => {
             const desc = move ? 'Go to move #' + move : 'Go to game start';
             return (
@@ -120,6 +82,52 @@ class Game extends React.Component {
         );
     }
 }
+
+
+
+class Board extends React.Component {
+    renderSquare(i) {
+        return <Square
+                    // props.squares[i]はどこから来ている？
+                    value={this.props.squares[i]}
+                    //このhandleClick(i)はどこから来ている？
+                    onClick={() => this.props.onClick(i)}
+                />;
+    }
+
+    render() {
+        return (
+            <div>
+                <div className="board-row">
+                    {this.renderSquare(0)}
+                    {this.renderSquare(1)}
+                    {this.renderSquare(2)}
+                </div>
+                <div className="board-row">
+                    {this.renderSquare(3)}
+                    {this.renderSquare(4)}
+                    {this.renderSquare(5)}
+                </div>
+                <div className="board-row">
+                    {this.renderSquare(6)}
+                    {this.renderSquare(7)}
+                    {this.renderSquare(8)}
+                </div>
+            </div>
+        )
+    }
+}
+
+
+
+function Square(props) {
+    return (
+        <button className='square' onClick={props.onClick}>
+            {props.value}
+        </button>
+    )
+}
+
 
 
 function calculateWinner(squares) {
