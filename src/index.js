@@ -52,6 +52,7 @@ class Game extends React.Component {
         // ?? 
         const moves = history.map((step, move) => {
             const desc = move ? 'Go to move #' + move : 'Go to game start';
+            // これはReactの書き方？（return()）
             return (
                 <li key={move}>
                     <button onClick={() => this.jumpTo(move)}>{desc}</button>
@@ -88,9 +89,9 @@ class Game extends React.Component {
 class Board extends React.Component {
     renderSquare(i) {
         return <Square
-                    // props.squares[i]はどこから来ている？
+                    // squares[i]はどこから来ている？
                     value={this.props.squares[i]}
-                    //このhandleClick(i)はどこから来ている？
+                    // onClick(i)はどこから来ている？
                     onClick={() => this.props.onClick(i)}
                 />;
     }
